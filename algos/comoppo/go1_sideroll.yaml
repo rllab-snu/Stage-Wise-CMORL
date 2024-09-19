@@ -1,0 +1,72 @@
+# base
+name: comoppo
+
+# for RL
+norm_obs: true
+norm_reward: true
+discount_factor: 0.99
+n_steps: 10000
+gae_coeff: 0.97
+max_grad_norm: 1.0
+actor_lr: 3e-5
+critic_lr: 3e-4
+n_actor_iters: 20
+n_critic_iters: 20
+history_len: 3
+
+# for trust region
+kl_tolerance: 2.0
+adaptive_lr_ratio: 1.5
+adaptive_clip_ratio: 1.0
+max_kl: 0.001
+clip_ratio: 0.03
+
+# for CMORL
+con_coeff: 10.0
+# reward_name: [com_pos, body_balance, rot_ang, vel, energy, style]
+preference: [1.0, 1.0, 1.0, 1.0, 0.1, 1.0]
+# cost_name: [foot_contact, body_contact, joint_pos, joint_vel, joint_torque]
+con_thresholds: [0.25, 0.025, 0.025, 0.025, 0.025]
+# symmetric constraints
+is_sym_con: true
+sym_con_threshold: 0.5 # 0.2 rad ~= 11.5 deg
+
+# for backup
+backup_files: [
+    algos/comoppo/agent.py,
+    algos/comoppo/actor.py,
+    algos/comoppo/critic.py,
+    algos/comoppo/normalizer.py,
+    algos/comoppo/storage.py,
+    algos/comoppo/go1_sideroll.yaml,
+]
+
+# for logging
+logging:
+    task_indep: [
+        fps, eplen, fail, 
+        kl, entropy, actor_lr, clip_ratio,
+        reward_critic_loss, cost_critic_loss, sym_constraint,
+        stage_0, stage_1, stage_2, stage_3, stage_4]
+    reward_dep: [objectives, reward_sum]
+    cost_dep: [constraints, cost_sum]
+
+# for model
+model:
+    actor:
+        mlp:
+            shape: [256, 128, 64]
+            activation: ELU
+        use_action_bound: false
+        log_std_init: 0.0
+        log_std_fix: true
+    reward_critic:
+        mlp:
+            shape: [256, 128, 64]
+            activation: ELU
+        clip_range: [-np.inf, np.inf]
+    cost_critic:
+        mlp:
+            shape: [256, 128, 64]
+            activation: ELU
+        clip_range: [-np.inf, np.inf]

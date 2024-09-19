@@ -1,0 +1,13 @@
+*.ipynb
+*.pkl
+*.pt
+*.pyc
+*.png
+.env
+args.txt
+
+__pycache__
+wandb
+model
+results
+.vscode

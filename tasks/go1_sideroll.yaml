@@ -1,0 +1,137 @@
+# used to create the object
+name: Go1Sideroll
+
+backup_files: [
+    'tasks/go1_sideroll.yaml',
+    'tasks/go1_sideroll.py',
+]
+n_total_steps: 500000000
+
+sim:
+    physics_engine: 'physx'
+    sim_dt: 0.005
+    con_dt: 0.02
+    substeps: 1
+    up_axis: "z"
+    use_gpu_pipeline: True
+    gravity: [0.0, 0.0, -9.81]
+    physx:
+        num_threads: 10
+        solver_type: 1
+        use_gpu: True
+        num_position_iterations: 4
+        num_velocity_iterations: 0
+        contact_offset: 0.01
+        rest_offset: 0.0
+        bounce_threshold_velocity: 0.5
+        max_depenetration_velocity: 1.0
+        default_buffer_size_multiplier: 5.0
+        max_gpu_contact_pairs: 8388608 # = 8*1024*1024
+        contact_collection: 2
+
+env:
+    num_envs: 1000
+    env_spacing: 2.0
+    history_len: 10
+    enable_camera_sensors: False
+
+    reward_names: [com_pos, body_balance, rotation_angle, base_vel, energy, style]
+    cost_names: [foot_contact, body_contact, joint_pos, joint_vel, joint_torque]
+    stage_names: [stand, sit, roll_half, roll_full, recover]
+
+    urdf_asset:
+        file: "go1/urdf/go1.urdf"
+        fix_base_link: false
+        flip_visual_attachments: false
+
+    default_joint_positions:
+        FL_hip_joint: 0.1       # [rad]
+        RL_hip_joint: 0.1       # [rad]
+        FR_hip_joint: -0.1      # [rad]
+        RR_hip_joint: -0.1      # [rad]
+        FL_thigh_joint: 0.8     # [rad]
+        RL_thigh_joint: 1.0     # [rad]
+        FR_thigh_joint: 0.8     # [rad]
+        RR_thigh_joint: 1.0     # [rad]
+        FL_calf_joint: -1.5     # [rad]
+        RL_calf_joint: -1.5     # [rad]
+        FR_calf_joint: -1.5     # [rad]
+        RR_calf_joint: -1.5     # [rad]
+
+    crawled_joint_positions:
+        FL_hip_joint: 0.0       # [rad]
+        RL_hip_joint: 0.0       # [rad]
+        FR_hip_joint: 0.0       # [rad]
+        RR_hip_joint: 0.0       # [rad]
+        FL_thigh_joint: 2.0     # [rad]
+        RL_thigh_joint: 2.0     # [rad]
+        FR_thigh_joint: 2.0     # [rad]
+        RR_thigh_joint: 2.0     # [rad]
+        FL_calf_joint: -2.5     # [rad]
+        RL_calf_joint: -2.5     # [rad]
+        FR_calf_joint: -2.5     # [rad]
+        RR_calf_joint: -2.5     # [rad]
+
+    init_base_pose:
+        pos: [0.0, 0.0, 0.34]       # x,y,z [m]
+        quat: [0.0, 0.0, 0.0, 1.0]   # x,y,z,w [quat]
+        lin_vel: [0.0, 0.0, 0.0]    # x,y,z [m/s]
+        ang_vel: [0.0, 0.0, 0.0]   # x,y,z [rad/s]
+
+    control:
+        stiffness: 20.0  # P gain [N*m/rad]
+        damping: 0.5     # D gain [N*m*s/rad]
+        ####################
+        # action scale:
+        # target angle = actionScale * action + defaultAngle
+        action_scale: 0.25
+        ####################
+        # smooth_weight: 1.0: no smoothing, 0.0: max smoothing
+        action_smooth_weight: 0.5
+
+    learn:
+        episode_length_s: 20.0   # [s]
+        ########################
+        # for constraint
+        joint_pos_lower: [
+            -0.2, -1.0, -2.6,
+            -0.8, -1.0, -2.6,
+            -0.2, -1.0, -2.6,
+            -0.8, -1.0, -2.6]
+        joint_pos_upper: [
+            0.8, 4.5, -0.9,
+            0.2, 4.5, -0.9,
+            0.8, 4.5, -0.9,
+            0.2, 4.5, -0.9]
+        joint_vel_upper: [
+            20.0, 20.0, 20.0, 
+            20.0, 20.0, 20.0, 
+            20.0, 20.0, 20.0, 
+            20.0, 20.0, 20.0]
+        joint_torque_upper: [
+            34.0, 34.0, 34.0, 
+            34.0, 34.0, 34.0, 
+            34.0, 34.0, 34.0, 
+            34.0, 34.0, 34.0]
+        ########################
+        
+    randomize:
+        is_randomized               : false
+        rand_period_motor_strength_s: 5.0
+        rand_period_gravity_s       : 5.0
+        rand_range_body_mass        : [-1.0, 3.0]
+        rand_range_com_pos_x        : [-0.05, 0.0]
+        rand_range_com_pos_y        : [-0.05, 0.0]
+        rand_range_com_pos_z        : [-0.03, 0.03]
+        rand_range_init_dof_pos     : [0.5, 1.5]
+        rand_range_init_root_vel    : [-0.5, 0.5]
+        rand_range_motor_strength   : [0.9, 1.1]
+        rand_range_gravity          : [-1.0, 1.0]
+        rand_range_friction         : [0.1, 2.0]
+        rand_range_restitution      : [0.0, 0.4]
+        rand_range_motor_offset     : [-0.02, 0.02]
+        noise_range_dof_pos         : 0.01
+        noise_range_dof_vel         : 1.5
+        noise_range_body_orn        : 0.25
+        n_lag_action_steps          : 6
+        n_lag_imu_steps             : 0

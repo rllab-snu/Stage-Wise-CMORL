@@ -1,0 +1,40 @@
+# base
+name: student
+
+# for teacher
+teacher:
+    algo_name: comoppo
+    seed: 1
+    model_num: 1000000000
+
+# for learning
+n_steps: 10000
+batch_size: 10000
+replay_size: 1000000
+max_grad_norm: 1.0
+actor_lr: 1e-3
+n_actor_iters: 100
+
+# for backup
+backup_files: [
+    algos/student/agent.py,
+    algos/student/normalizer.py,
+    algos/student/storage.py,
+    algos/student/go1_backflip.yaml,
+]
+
+# for logging
+logging:
+    task_indep: [fps, eplen, fail, actor_loss]
+    reward_dep: [reward_sum]
+    cost_dep: [cost_sum]
+
+# for model
+model:
+    actor:
+        mlp:
+            shape: [256, 128, 64]
+            activation: ELU
+        use_action_bound: false
+        log_std_init: 0.0
+        log_std_fix: true
