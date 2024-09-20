@@ -634,8 +634,8 @@ class Env(VecTask):
         base_ang_vel_x = base_ang_vels[:, 0]
         self.rew_buf[:, 2] =  self.stage_buf[:, 0]*(-vel_penalty)
         self.rew_buf[:, 2] += self.stage_buf[:, 1]*(-vel_penalty)
-        self.rew_buf[:, 2] += self.stage_buf[:, 2]*(1.0 - self.is_one_turn_buf)*(-base_ang_vel_x)
-        self.rew_buf[:, 2] += self.stage_buf[:, 3]*(1.0 - self.is_one_turn_buf)*(-base_ang_vel_x)
+        self.rew_buf[:, 2] += self.stage_buf[:, 2]*(1.0 - self.is_one_turn_buf)*(base_ang_vel_x)
+        self.rew_buf[:, 2] += self.stage_buf[:, 3]*(1.0 - self.is_one_turn_buf)*(base_ang_vel_x)
         self.rew_buf[:, 2] += self.stage_buf[:, 4]*(-vel_penalty)
         # energy
         self.rew_buf[:, 3] = -torch.square(self.dof_torques).mean(dim=-1)
