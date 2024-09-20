@@ -3,6 +3,7 @@
 *.pt
 *.pyc
 *.png
+*.sh
 .env
 args.txt
 
