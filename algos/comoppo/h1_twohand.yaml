@@ -24,7 +24,7 @@ clip_ratio: 0.03
 # for CMORL
 con_coeff: 10.0
 # reward_names: [body_balance, vel, contact, energy, style, smooth_1st, smooth_2nd]
-preference: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+preference: [1.0, 1.0, 1.0, 0.1, 1.0, 0.1, 0.1]
 # cost_names: [gait, body_height, body_contact, joint_pos, joint_vel, joint_torque]
 con_thresholds: [0.25, 0.025, 0.025, 0.025, 0.025, 0.025]
 # symmetric constraints

@@ -554,10 +554,10 @@ class Env(VecTask):
         foot_contact_cost += right_phase*(1.0 - foot_contact[:, 1]) + (1.0 - right_phase)*foot_contact[:, 1]
         foot_contact_cost /= 2.0
         self.cost_buf[:, 0]  = self.stage_buf[:, 0]*foot_contact_cost
-        self.cost_buf[:, 0] += self.stage_buf[:, 1]*foot_contact_cost
-        self.cost_buf[:, 0] += self.stage_buf[:, 2]*foot_contact_cost
+        self.cost_buf[:, 0] += self.stage_buf[:, 1]*foot_contact.mean(dim=-1)
+        self.cost_buf[:, 0] += self.stage_buf[:, 2]*foot_contact.mean(dim=-1)
         self.cost_buf[:, 0] += self.stage_buf[:, 3]*foot_contact_threshold
-        self.cost_buf[:, 0] += self.stage_buf[:, 4]*foot_contact_cost
+        self.cost_buf[:, 0] += self.stage_buf[:, 4]*foot_contact_threshold
         # body contact
         term_contact = torch.any(torch.norm(self.contact_forces[:, self.terminate_touch_indices, :], dim=-1) > 1.0, dim=-1)
         undesired_contact = torch.any(torch.norm(self.contact_forces[:, self.undesired_touch_indices, :], dim=-1) > 1.0, dim=-1)
@@ -697,10 +697,10 @@ def jit_compute_observations(
     # previous actions
     obs_list.append(prev_actions) # 19
     # central phase
-    obs_list.append(command[:, 0:1]*torch.cos(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1)))
-    obs_list.append(command[:, 0:1]*torch.sin(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1)))
-    obs_list.append(command[:, 0:1]*torch.cos(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1) + np.pi))
-    obs_list.append(command[:, 0:1]*torch.sin(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1) + np.pi))
+    obs_list.append(torch.cos(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1)))
+    obs_list.append(torch.sin(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1)))
+    obs_list.append(torch.cos(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1) + np.pi))
+    obs_list.append(torch.sin(2.0*np.pi*gait_freq*world_time.unsqueeze(dim=-1) + np.pi))
     # command
     obs_list.append(command) # 3
     # concatenate
