@@ -572,7 +572,7 @@ class Env(VecTask):
         # have to handle in the following order: N -> N-1 -> N-2 ... -> 1 -> 0.
         from1_to2= torch.logical_and(
             self.stage_buf[:, 1] == 1.0, torch.logical_and(
-                self.progress_buf*self.control_dt >= self.land_time_buf + 1.0, torch.logical_and(
+                self.progress_buf*self.control_dt >= self.land_time_buf + 0.1, torch.logical_and(
                 self.land_time_buf > 0, body_height > 0.5))).type(torch.float32)
         self.stage_buf[:, 1] = (1.0 - from1_to2)*self.stage_buf[:, 1]
         self.stage_buf[:, 2] = from1_to2 + (1.0 - from1_to2)*self.stage_buf[:, 2]
