@@ -1,6 +1,6 @@
 # Stage-Wise CMORL
 
-This is an official GitHub Repository for paper "Stage-Wise Reward Shaping for Acrobatic Robots: A Constrained Multi-Objective Reinforcement Learning Approach", [link](https://arxiv.org/abs/2409.15755).
+This is an official GitHub Repository for paper ["Stage-Wise Reward Shaping for Acrobatic Robots: A Constrained Multi-Objective Reinforcement Learning Approach"](https://arxiv.org/abs/2409.15755).
 
 ## Requirement
 
